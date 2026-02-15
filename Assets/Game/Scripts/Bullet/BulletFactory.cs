@@ -5,12 +5,12 @@ namespace Game
     public class BulletFactory: MonoBehaviour
     {
         [SerializeField]
-        private BulletData _prefab;
+        private Bullet _prefab;
 
         [SerializeField]
         private Transform _container;
 
-        public BulletData CreateBullet()
+        public Bullet CreateBullet()
         {
             return Instantiate(_prefab, _container);
         }

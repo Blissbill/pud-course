@@ -20,14 +20,14 @@ namespace Game
         [SerializeField] 
         private int _initialBulletCount = 10;
         
-        private readonly Stack<BulletData> _pool = new();
-        private readonly List<BulletData> _bullets = new();
+        private readonly Stack<Bullet> _pool = new();
+        private readonly List<Bullet> _bullets = new();
         
         private void Awake()
         {
             for (var i = 0; i < _initialBulletCount; i++)
             {
-                BulletData bullet = _factory.CreateBullet();
+                Bullet bullet = _factory.CreateBullet();
                 bullet.gameObject.SetActive(false);
                 _pool.Push(bullet);
             }
@@ -37,14 +37,13 @@ namespace Game
         {
             for (int i = _bullets.Count - 1; i >= 0; i--)
             {
-                BulletData bullet = _bullets[i];
-                Vector3 moveStep = bullet.direction * bullet.speed * Time.fixedDeltaTime;
-                bullet.transform.position += moveStep;
-
-                if (!_levelBounds.InBounds(bullet.transform.position))
+                Bullet bullet = _bullets[i];
+                bullet.Move(Time.fixedDeltaTime);
+                
+                if (!_levelBounds.InBounds(bullet.Position))
                 {
                     _bullets.RemoveAt(i);
-
+                
                     bullet.OnTriggerEntered -= this.OnTriggerEntered;
                     bullet.gameObject.SetActive(false);
                     _pool.Push(bullet);
@@ -54,75 +53,62 @@ namespace Game
         
         public void Spawn(Vector2 position, Vector2 direction, float speed, int damage, TeamType team)
         {
-            if (_pool.TryPop(out BulletData bullet))
+            if (_pool.TryPop(out Bullet bullet))
                 bullet.gameObject.SetActive(true);
             else
                 bullet = _factory.CreateBullet();
-            
-            bullet.direction = direction;
-            bullet.speed = speed;
-            bullet.damage = damage;
-            bullet.team = team;
-
-            bullet.transform.position = position;
-            bullet.transform.rotation = Quaternion.LookRotation(direction, Vector3.forward);
             bullet.gameObject.layer = team switch
             {
-                TeamType.None => LayerMask.NameToLayer("Default"),
-                TeamType.Player => LayerMask.NameToLayer("PlayerBullet"),
-                TeamType.Enemy => LayerMask.NameToLayer("EnemyBullet"),
+                TeamType.None => LayerIds.Default.Value,
+                TeamType.Player => LayerIds.PlayerBullet.Value,
+                TeamType.Enemy => LayerIds.EnemyBullet.Value,
                 _ => throw new ArgumentOutOfRangeException(nameof(team), team, null)
             };
-
-            if (team == TeamType.Player)
-            {
-                // TODO: добавить медиатор для установки VFX 
-                bullet.blueVFX.SetActive(true);
-                bullet.redVFX.SetActive(false);
-            }
-            else
-            {
-                bullet.blueVFX.SetActive(false);
-                bullet.redVFX.SetActive(true);
-            }
-
             bullet.OnTriggerEntered += this.OnTriggerEntered;
+            bullet.
+                Clear().
+                WithDirection(direction).
+                WithSpeed(speed).
+                WithDamage(damage).
+                WithPosition(position).
+                WithRotation(Quaternion.LookRotation(direction, Vector3.forward)).
+                WithTeam(team);
             _bullets.Add(bullet);
         }
         
-        private void OnTriggerEntered(BulletData bullet, Collider2D other)
+        private void OnTriggerEntered(Bullet bullet, Collider2D other)
         {
             // TODO: Переделать оповещение о получении урона
             if (!other.TryGetComponent(out ShipController ship)) 
                 return;
-
-            if (bullet.team == TeamType.Player && ship is Enemy ||
-                bullet.team == TeamType.Enemy && ship is PlayerShip)
-            {
-                // Deal damage to target:
-                if (bullet.damage > 0)
-                {
-                    ship.currentHealth = Mathf.Clamp(ship.currentHealth - bullet.damage, 0, ship.config.Health);
-                    ship.NotifyAboutHealthChanged(ship.currentHealth);
- 
-                    if (ship.currentHealth <= 0)
-                    {
-                        ship.NotifyAboutDead();
-                        ship.gameObject.SetActive(false);
-                    }
-                }
-
-                bullet.OnTriggerEntered -= this.OnTriggerEntered;
-
-                _bullets.Remove(bullet);
-
-                bullet.gameObject.SetActive(false);
-                _pool.Push(bullet);
-
-                // Explosion Vfx
-                GameObject prefab = _configView.ExplosionVFX;
-                Instantiate(prefab, bullet.transform.position, prefab.transform.rotation);
-            }
+            
+            // if (bullet.team == TeamType.Player && ship is Enemy ||
+            //     bullet.team == TeamType.Enemy && ship is PlayerShip)
+            // {
+            //     // Deal damage to target:
+            //     if (bullet.damage > 0)
+            //     {
+            //         ship.currentHealth = Mathf.Clamp(ship.currentHealth - bullet.damage, 0, ship.config.Health);
+            //         ship.NotifyAboutHealthChanged(ship.currentHealth);
+            //
+            //         if (ship.currentHealth <= 0)
+            //         {
+            //             ship.NotifyAboutDead();
+            //             ship.gameObject.SetActive(false);
+            //         }
+            //     }
+            //
+            //     bullet.OnTriggerEntered -= this.OnTriggerEntered;
+            //
+            //     _bullets.Remove(bullet);
+            //
+            //     bullet.gameObject.SetActive(false);
+            //     _pool.Push(bullet);
+            //
+            //     // Explosion Vfx
+            //     GameObject prefab = _configView.ExplosionVFX;
+            //     Instantiate(prefab, bullet.transform.position, prefab.transform.rotation);
+            // }
         }
     }
 }
