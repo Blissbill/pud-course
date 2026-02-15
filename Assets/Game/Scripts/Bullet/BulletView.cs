@@ -9,6 +9,8 @@ namespace Game
         private GameObject _blueVFX;
         [SerializeField]
         private GameObject _redVFX;
+        [SerializeField]
+        private BulletViewConfig _configView;
 
         private IBulletAdapter _bulletAdapter;
         
@@ -17,6 +19,12 @@ namespace Game
             // SerializeField не работает с интерфейсами
             _bulletAdapter = GetComponent<BulletAdapter>();
             _bulletAdapter.OnTeamChanged += this.OnTeamChanged;
+            _bulletAdapter.OnHit += OnHit;
+        }
+        
+        public void OnDestroy()
+        {
+            _bulletAdapter.OnTeamChanged -= this.OnTeamChanged;
         }
 
         private void OnTeamChanged(TeamType teamType)
@@ -37,9 +45,12 @@ namespace Game
             }
         }
 
-        public void OnDestroy()
+        private void OnHit(Vector3 position)
         {
-            _bulletAdapter.OnTeamChanged -= this.OnTeamChanged;
+            GameObject prefab = _configView.ExplosionVFX;
+            Instantiate(prefab, position, prefab.transform.rotation);
         }
+ 
+
     }
 }

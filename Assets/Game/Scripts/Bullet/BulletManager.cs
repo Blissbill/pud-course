@@ -14,9 +14,6 @@ namespace Game
         [SerializeField]
         private TransformBounds _levelBounds;
         
-        [SerializeField]
-        private BulletViewConfig _configView;
-        
         [SerializeField] 
         private int _initialBulletCount = 10;
         
@@ -57,7 +54,7 @@ namespace Game
                 bullet.gameObject.SetActive(true);
             else
                 bullet = _factory.CreateBullet();
-            bullet.gameObject.layer = team switch
+            int layer = team switch
             {
                 TeamType.None => LayerIds.Default.Value,
                 TeamType.Player => LayerIds.PlayerBullet.Value,
@@ -72,43 +69,21 @@ namespace Game
                 WithDamage(damage).
                 WithPosition(position).
                 WithRotation(Quaternion.LookRotation(direction, Vector3.forward)).
+                WithLayer(layer).
                 WithTeam(team);
             _bullets.Add(bullet);
         }
         
         private void OnTriggerEntered(Bullet bullet, Collider2D other)
         {
-            // TODO: Переделать оповещение о получении урона
-            if (!other.TryGetComponent(out ShipController ship)) 
+            if (!other.TryGetComponent(out IDamageable damageable)) 
                 return;
-            
-            // if (bullet.team == TeamType.Player && ship is Enemy ||
-            //     bullet.team == TeamType.Enemy && ship is PlayerShip)
-            // {
-            //     // Deal damage to target:
-            //     if (bullet.damage > 0)
-            //     {
-            //         ship.currentHealth = Mathf.Clamp(ship.currentHealth - bullet.damage, 0, ship.config.Health);
-            //         ship.NotifyAboutHealthChanged(ship.currentHealth);
-            //
-            //         if (ship.currentHealth <= 0)
-            //         {
-            //             ship.NotifyAboutDead();
-            //             ship.gameObject.SetActive(false);
-            //         }
-            //     }
-            //
-            //     bullet.OnTriggerEntered -= this.OnTriggerEntered;
-            //
-            //     _bullets.Remove(bullet);
-            //
-            //     bullet.gameObject.SetActive(false);
-            //     _pool.Push(bullet);
-            //
-            //     // Explosion Vfx
-            //     GameObject prefab = _configView.ExplosionVFX;
-            //     Instantiate(prefab, bullet.transform.position, prefab.transform.rotation);
-            // }
+            if (!damageable.TakeDamage(bullet.Damage, bullet.Team)) 
+                return;
+            bullet.OnTriggerEntered -= OnTriggerEntered;
+            _bullets.Remove(bullet);
+            bullet.Hit();
+            _pool.Push(bullet);
         }
     }
 }

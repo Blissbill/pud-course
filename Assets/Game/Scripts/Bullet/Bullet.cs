@@ -8,8 +8,11 @@ namespace Game
     {
         public event Action<Bullet, Collider2D> OnTriggerEntered;
         public event Action<TeamType> OnTeamChanged;
+        public event Action<Vector3> OnHit;
         public Vector3 Position => transform.position;
-        
+        public TeamType Team => _team;
+        public int Damage => _damage;
+
         [SerializeField]
         private TeamType _team = TeamType.None;
         [SerializeField]
@@ -57,6 +60,12 @@ namespace Game
             return this;
         }
 
+        public Bullet WithLayer(int layer)
+        {
+            gameObject.layer = layer;
+            return this;
+        }
+
         public Bullet Clear()
         {
             _team = TeamType.None;
@@ -74,7 +83,12 @@ namespace Game
             Vector3 moveStep = _direction * _speed * deltaTime;
             transform.position += moveStep;
         }
-        
+
+        public void Hit()
+        {
+            gameObject.SetActive(false);
+            OnHit?.Invoke(transform.position);
+        }
         private void OnTriggerEnter2D(Collider2D other) => this.OnTriggerEntered?.Invoke(this, other);
         
     }

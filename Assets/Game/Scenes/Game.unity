@@ -594,7 +594,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fd9fc3bb427b684ebed0fe226074407, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Game::Game.BulletFactory
-  _prefab: {fileID: 201757604187811891, guid: 5fe72886874b4e445b06cf777ca4920d, type: 3}
+  _prefab: {fileID: 5342078520301469137, guid: 5fe72886874b4e445b06cf777ca4920d, type: 3}
   _container: {fileID: 363245576}
 --- !u!114 &363245579
 MonoBehaviour:
@@ -610,7 +610,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Game::Game.BulletManager
   _factory: {fileID: 363245578}
   _levelBounds: {fileID: 2572952653776768186}
-  _configView: {fileID: 11400000, guid: f2107b212e6a245009f8ae9313cc81bb, type: 2}
   _initialBulletCount: 10
 --- !u!1 &404085825
 GameObject:

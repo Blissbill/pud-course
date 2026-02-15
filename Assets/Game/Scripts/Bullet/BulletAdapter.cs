@@ -9,20 +9,28 @@ namespace Game
         private Bullet _bullet;
 
         public event Action<TeamType> OnTeamChanged;
+        public event Action<Vector3> OnHit;
 
         public void Awake()
         {
             _bullet.OnTeamChanged += HandleTeamChanged;
+            _bullet.OnHit += HandleHit;
+        }
+        
+        public void OnDestroy()
+        {
+            _bullet.OnTeamChanged -= HandleTeamChanged;
+            _bullet.OnHit -= HandleHit;
         }
         
         private void HandleTeamChanged(TeamType team)
         {
             OnTeamChanged?.Invoke(team);
         }
-        
-        private void OnDestroy()
+
+        private void HandleHit(Vector3 position)
         {
-            _bullet.OnTeamChanged -= HandleTeamChanged;
+            OnHit?.Invoke(position);
         }
     }
 }

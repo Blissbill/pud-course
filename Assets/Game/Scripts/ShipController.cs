@@ -12,7 +12,7 @@ namespace Game
 
         public event Action<ShipController> OnFire;
 
-        public ShipControllerSO config;
+        public ShipControllerConfig config;
 
         [Header("Health")]
         public int currentHealth;
