@@ -1,3 +1,5 @@
+using Game.Player;
+using Game.Scripts.Ship;
 using UnityEngine;
 
 namespace Game
@@ -21,13 +23,13 @@ namespace Game
             _player.OnFire -= this.OnFire;
         }
 
-        private void OnFire(ShipController _)
+        private void OnFire(CombatData combatData)
         {
             _bulletManager.Spawn(
-                _player.firePoint.position,
-                _player.firePoint.up,
-                _player.bulletSpeed,
-                _player.bulletDamage,
+                combatData.FirePoint.position,
+                combatData.FirePoint.up,
+                combatData.BulletSpeed,
+                combatData.BulletDamage,
                 TeamType.Player
             );
         }

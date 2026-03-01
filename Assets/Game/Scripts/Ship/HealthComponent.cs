@@ -13,7 +13,7 @@ namespace Game.Components
         public int CurrentHealth { get; private set; }
         
 
-        public void Initialize(ShipControllerConfig config, TeamType team)
+        public void Init(ShipControllerConfig config, TeamType team)
         {
             MaxHealth = config.Health;
             CurrentHealth = config.Health;

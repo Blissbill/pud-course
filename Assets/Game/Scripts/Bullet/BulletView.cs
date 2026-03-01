@@ -14,7 +14,7 @@ namespace Game
 
         private IBulletAdapter _bulletAdapter;
         
-        public void Awake()
+        private void Awake()
         {
             // SerializeField не работает с интерфейсами
             _bulletAdapter = GetComponent<BulletAdapter>();
@@ -22,7 +22,7 @@ namespace Game
             _bulletAdapter.OnHit += OnHit;
         }
         
-        public void OnDestroy()
+        private void OnDestroy()
         {
             _bulletAdapter.OnTeamChanged -= this.OnTeamChanged;
         }

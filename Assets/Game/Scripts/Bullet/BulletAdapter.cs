@@ -11,13 +11,13 @@ namespace Game
         public event Action<TeamType> OnTeamChanged;
         public event Action<Vector3> OnHit;
 
-        public void Awake()
+        private void Awake()
         {
             _bullet.OnTeamChanged += HandleTeamChanged;
             _bullet.OnHit += HandleHit;
         }
         
-        public void OnDestroy()
+        private void OnDestroy()
         {
             _bullet.OnTeamChanged -= HandleTeamChanged;
             _bullet.OnHit -= HandleHit;
