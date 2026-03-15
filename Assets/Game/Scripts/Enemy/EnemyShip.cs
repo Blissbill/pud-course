@@ -1,25 +1,22 @@
-﻿using Game.Scripts.Ship;
+﻿using Game.Ship;
 using UnityEngine;
 
-namespace Game
+namespace Game.Enemy
 {
-    public class EnemyShip: ShipController
+    public sealed class EnemyShip : ShipController
     {
-        [Header("Enemy")]
-        private ShipController _target;
-        [SerializeField]
-        private float _fireCooldown = 1.25f;
         [SerializeField]
         private float _stoppingDistance = 0.25f;
 
-        private float _fireTime;
         private Vector2 _destination;
+
+        public void SetDestination(Vector2 destination) => _destination = destination;
         
         protected override void FixedUpdate()
         {
             base.FixedUpdate();
 
-            if (_healthComponent.CurrentHealth <= 0 || _target == null || _target.CurrentHealth <= 0)
+            if (_healthComponent.CurrentHealth <= 0)
                 return;
 
             Vector2 distance = _destination - (Vector2) this.transform.position;
@@ -31,12 +28,7 @@ namespace Game
             }
             else
             {
-                float time = Time.time;
-                if (time - _fireTime >= _fireCooldown)
-                {
-                    _combatComponent.Fire();
-                    _fireTime = time;
-                }
+                _combatComponent.Fire();
             }
         }
     }

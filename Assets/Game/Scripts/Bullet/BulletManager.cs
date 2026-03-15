@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using Game.Core;
+using Game.Ship.Components;
 using Modules.Utils;
 using UnityEngine;
 
-namespace Game
+namespace Game.Bullet
 {
-    public class BulletManager : MonoBehaviour
+    public sealed class BulletManager : MonoBehaviour
     {
         [SerializeField]
         private BulletFactory _factory;
@@ -76,10 +77,12 @@ namespace Game
         
         private void OnTriggerEntered(Bullet bullet, Collider2D other)
         {
-            if (!other.TryGetComponent(out IDamageable damageable)) 
+            if (!other.TryGetComponent(out IDamageable damageable))
                 return;
-            if (!damageable.TakeDamage(bullet.Damage, bullet.Team)) 
+            if (bullet.Team == damageable.Team) 
                 return;
+
+            damageable.TakeDamage(bullet.Damage);
             bullet.OnTriggerEntered -= OnTriggerEntered;
             _bullets.Remove(bullet);
             bullet.Hit();

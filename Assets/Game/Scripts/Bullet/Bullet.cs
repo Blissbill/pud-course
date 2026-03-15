@@ -1,7 +1,8 @@
 using System;
+using Game.Core;
 using UnityEngine;
 
-namespace Game
+namespace Game.Bullet
 {
     // +
     public sealed class Bullet : MonoBehaviour

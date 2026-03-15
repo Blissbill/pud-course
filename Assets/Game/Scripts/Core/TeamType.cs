@@ -1,4 +1,4 @@
-﻿namespace Game
+﻿namespace Game.Core
 {
     // +
     public enum TeamType

@@ -1,9 +1,10 @@
-﻿using Modules.Utils;
+﻿using Game.Ship;
+using Modules.Utils;
 using UnityEngine;
 
 namespace Game.Player
 {
-    public class PlayerShip: Scripts.Ship.ShipController
+    public sealed class PlayerShip: ShipController
     {
         [SerializeField]
         private TransformBounds _playerArea;
@@ -15,16 +16,17 @@ namespace Game.Player
 
             float dx = Input.GetAxisRaw("Horizontal");
             float dy = Input.GetAxisRaw("Vertical");
-
-            if (_healthComponent.CurrentHealth > 0)
-            {
-                _movementComponent.MoveStep(new Vector2(dx, dy));
-            }
+            _movementComponent.MoveStep(new Vector2(dx, dy));
         }
 
-        protected void LateUpdate()
+        protected override void HandleDied()
         {
-            this.transform.position = _playerArea.ClampInBounds(this.transform.position);
+            base.HandleDied();
+            gameObject.SetActive(false);
+        }
+        private void LateUpdate()
+        {
+            transform.position = _playerArea.ClampInBounds(transform.position);
         }
     }
 }

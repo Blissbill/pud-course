@@ -100,3 +100,13 @@ InitTestScene*.unity*
 
 # Local folders
 .idea/
+
+# Unity auto-modified 3rdParty files (change on every editor run)
+Assets/3rdParty/AllIn13DShader/Demo/Materials/StandardExamples/MAT_Ellen_Hair_MatStandard.mat
+Assets/3rdParty/AllIn13DShader/Demo/Materials/StandardExamples/MAT_Ellen_Hair_MatStandard.mat.meta
+Assets/3rdParty/AllIn13DShader/Editor/PropertiesConfigCollection.asset
+Assets/3rdParty/AllIn13DShader/Editor/PropertiesConfigCollection.asset.meta
+
+# Unity crash recovery folder
+Assets/_Recovery/
+Assets/_Recovery.meta

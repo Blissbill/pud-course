@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-namespace Game
+namespace Game.Bullet
 {
-    public class BulletFactory: MonoBehaviour
+    public sealed class BulletFactory : MonoBehaviour
     {
         [SerializeField]
         private Bullet _prefab;

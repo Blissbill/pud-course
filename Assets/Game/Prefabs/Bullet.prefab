@@ -130,6 +130,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Game::Game.BulletView
   _blueVFX: {fileID: 2619809868877078830}
   _redVFX: {fileID: 1820983718236820478}
+  _explosionVFX: {fileID: 1101452535904402, guid: 742ae5c3589574c4195065193e9181b5, type: 3}
 --- !u!114 &6657168872965159218
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -143,6 +144,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Game::Game.BulletAdapter
   _bullet: {fileID: 5342078520301469137}
+  _bulletView: {fileID: 4439216258012611050}
 --- !u!1 &3276060438849189846
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,8 +1,9 @@
-using Game.Player;
-using Game.Scripts.Ship;
+using Game.Bullet;
+using Game.Core;
+using Game.Ship.Components;
 using UnityEngine;
 
-namespace Game
+namespace Game.Player
 {
     // +
     public sealed class PlayerBulletInstantiator : MonoBehaviour
@@ -15,12 +16,12 @@ namespace Game
 
         private void OnEnable()
         {
-            _player.OnFire += this.OnFire;
+            _player.OnFire += OnFire;
         }
 
         private void OnDisable()
         {
-            _player.OnFire -= this.OnFire;
+            _player.OnFire -= OnFire;
         }
 
         private void OnFire(CombatData combatData)
